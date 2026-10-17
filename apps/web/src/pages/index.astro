@@ -1,0 +1,44 @@
+---
+import { fullForm, sampleDeck } from "@vocablium/core";
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Vocablium — {sampleDeck.title}</title>
+  </head>
+  <body>
+    <h1>{sampleDeck.title}</h1>
+    <ul>
+      {sampleDeck.words.map((word) => (
+        <li>
+          {word.emoji} <strong>{fullForm(word)}</strong> — {word.translations?.es}
+        </li>
+      ))}
+    </ul>
+
+    <form id="quiz">
+      <label>
+        ¿Cómo se dice «{sampleDeck.words[0].translations?.es}»?
+        <input name="noun" autocomplete="off" />
+      </label>
+      <button>Comprobar</button>
+      <output id="result"></output>
+    </form>
+
+    <script>
+      import { checkGuess, sampleDeck } from "@vocablium/core";
+
+      const form = document.querySelector<HTMLFormElement>("#quiz")!;
+      const result = document.querySelector<HTMLOutputElement>("#result")!;
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const noun = new FormData(form).get("noun") as string;
+        const { nounCorrect } = checkGuess(sampleDeck.words[0]!, { noun });
+        result.textContent = nounCorrect ? "✅" : "❌";
+      });
+    </script>
+  </body>
+</html>
